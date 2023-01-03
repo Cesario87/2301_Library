@@ -1,0 +1,9 @@
+/* #seccionListas{
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+} */
+
+#tarjetas{
+    border: 5px solid black;
+}
