@@ -1,3 +1,4 @@
+
 async function getLists() {
     let resultado = await fetch("https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=RWybTfef3RewOzxt4nu6khx24FcPaoAI");
     let dataBase = await resultado.json();
@@ -5,35 +6,28 @@ async function getLists() {
     return listas;
 }
 
-// async function getHardcoverFiction() {
-//     let list_name = "hardcover-fiction";
-//     let resultado = await fetch(`https://api.nytimes.com/svc/books/v3/lists/current/${list_name}.json?api-key=RWybTfef3RewOzxt4nu6khx24FcPaoAI`);
-//     let dataBase = await resultado.json();
-//     const lista1 = dataBase.results;
-//     return lista1;
-// }
-
-// async function init() {
-//     let lista1 = await getHardcoverFiction();
-//     console.log(lista1);
-// }
-
-// init();
+let header = document.querySelector("#header");
+let encabezado = document.createElement("div")
+header.appendChild(encabezado);
 
 async function showLists() {
     let listasTodas = await getLists();
+
     let tarjetas = document.querySelector("#seccionListas");
+
+    encabezado.innerHTML = `<img src="Captura.PNG" id="encabezado"></img>`;
 
     for (let i = 0; i < listasTodas.length; i++) {
         let tarjeta = document.createElement("div")
         tarjetas.appendChild(tarjeta);
+        tarjeta.setAttribute("id", "ordenarTarjetas");
 
         tarjeta.innerHTML = `<div id="tarjetasListas">
-        <p>${listasTodas[i].list_name}</p>
+        <p id="titulosListas">${listasTodas[i].list_name}</p>
         <p>Oldest: ${listasTodas[i].oldest_published_date}</p>
         <p>Newest: ${listasTodas[i].newest_published_date}</p>
         <p>Updated: ${listasTodas[i].updated}</p>
-        <input type="button" value="Read more!" id="btn${[i]}"></input>
+        <input type="button" value="READ MORE! >" class="botonesListas" id="btn${[i]}"></input>
         </div>`;
         let nombreLista = listasTodas[i].list_name;
         document.querySelector(`#btn${[i]}`).addEventListener("click", () => { init(nombreLista, tarjetas); })
@@ -47,28 +41,43 @@ async function showLists() {
 
     async function init(nombre, espacio) {
         let lista1 = await getOneList(nombre);
-        console.log(lista1);
-        console.log(nombre);
         espacio.innerHTML = "";
-        let botonIndex = document.createElement("div");
-        espacio.appendChild(botonIndex);
-        botonIndex.innerHTML = `<input type="button" value="BACK TO INDEX" id="btnIndex"></input>`;
-        
-        const botonIndex1 = document.querySelector("#btnIndex");
-        botonIndex1.onclick = () => {
-            espacio.innerHTML = "";
-            showLists()
-        };
+
+        let tituloLista = document.createElement("div")
+        espacio.appendChild(tituloLista);
+        tituloLista.innerHTML = `${lista1.display_name}`;
+        tituloLista.setAttribute("id", "tituloLista");
+
+        function crearBoton(idBtn) {
+            let botonIndex = document.createElement("div");
+            espacio.appendChild(botonIndex);
+            botonIndex.innerHTML = `<input type="button" value="< BACK TO INDEX" id="${idBtn}"></input>`;
+            const botonIndex1 = document.getElementById(idBtn);
+            botonIndex1.onclick = () => {
+                espacio.innerHTML = "";
+                showLists()
+            };
+        }
+
+        crearBoton("btnIndex")
+
+        let espacioTarjetas = document.createElement("div")
+        espacio.appendChild(espacioTarjetas);
+        espacioTarjetas.setAttribute("id", "flexTarjetas");
 
         for (let j = 0; j < lista1.books.length; j++) {
             let espacioLibros = document.createElement("div");
-            espacio.appendChild(espacioLibros);
-            espacioLibros.innerHTML = `<div id="tarjetasLibros">
-            <p>#${lista1.books[j].rank} ${lista1.books[j].title}</p>
+            espacioTarjetas.appendChild(espacioLibros);
+            espacioLibros.setAttribute("id", "tarjetasLibros");
+            espacioLibros.innerHTML = `
+            <p id="rankedTitle">#${lista1.books[j].rank} ${lista1.books[j].title}</p>
+            <div class="centrarPortadas">
             <img id="portada" src="${lista1.books[j].book_image}"></img>
+            </div>
             <p>Weeks on list: ${lista1.books[j].weeks_on_list}</p>
             <p>${lista1.books[j].description}</p>
-            <input type="button" value="FAV" id="btnFav"></input>
+            <div id="botonesFavAmazon">
+            <input type="button" value="Add to favorites" id="btnFav"></input>
             <a href="${lista1.books[j].amazon_product_url}"><img id="iconoAmazon" src="amazon.jpg"></img></a>
             </div>`;
         }
@@ -77,7 +86,9 @@ async function showLists() {
         botonFav.onclick = () => {
             //GUARDAR FAVORITO EN FIREBASE
         };
-    }
+
+        crearBoton("btnIndex1")
+    };
 }
 
 showLists();
