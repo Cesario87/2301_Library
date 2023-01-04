@@ -13,22 +13,22 @@ header.appendChild(encabezado);
 async function showLists() {
     let listasTodas = await getLists();
 
-    let tarjetas = document.querySelector("#seccionListas");
-
+    let tarjetas = document.querySelector(".overall");
+    tarjetas.setAttribute("id", "");
     encabezado.innerHTML = `<img src="Captura.PNG" id="encabezado"></img>`;
 
     for (let i = 0; i < listasTodas.length; i++) {
         let tarjeta = document.createElement("div")
         tarjetas.appendChild(tarjeta);
-        tarjeta.setAttribute("id", "ordenarTarjetas");
+        tarjeta.setAttribute("id", "tarjetasListas");
 
-        tarjeta.innerHTML = `<div id="tarjetasListas">
+        tarjeta.innerHTML = `
         <p id="titulosListas">${listasTodas[i].list_name}</p>
         <p>Oldest: ${listasTodas[i].oldest_published_date}</p>
         <p>Newest: ${listasTodas[i].newest_published_date}</p>
         <p>Updated: ${listasTodas[i].updated}</p>
         <input type="button" value="READ MORE! >" class="botonesListas" id="btn${[i]}"></input>
-        </div>`;
+        `;
         let nombreLista = listasTodas[i].list_name;
         document.querySelector(`#btn${[i]}`).addEventListener("click", () => { init(nombreLista, tarjetas); })
     }
@@ -51,6 +51,7 @@ async function showLists() {
         function crearBoton(idBtn) {
             let botonIndex = document.createElement("div");
             espacio.appendChild(botonIndex);
+            espacio.setAttribute("id", "seccionListas");
             botonIndex.innerHTML = `<input type="button" value="< BACK TO INDEX" id="${idBtn}"></input>`;
             const botonIndex1 = document.getElementById(idBtn);
             botonIndex1.onclick = () => {
