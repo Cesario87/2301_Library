@@ -35,6 +35,10 @@
                         <p id="new">Are you new here?</p>
                         <input type="text" id="sign-email" placeholder="Email">
                         <input type="password" id="sign-pass" placeholder="Password">
+                        <input type="file" id="imgUser" onchange="getFile(event)" accept="image/png, image/jpeg"/>
+                        <label for="imgUser"></label>
+                        <span class="fileText"></span>
+                        <button onclick="uploadImage()">Upload image</button>
                         <input class="button" type="submit" value="Sign in">
                     </div>
                 </form>    

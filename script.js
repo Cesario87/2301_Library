@@ -5,14 +5,14 @@ const firebaseConfig = {
     storageBucket: "library-4a7cc.appspot.com",
     messagingSenderId: "217622494963",
     appId: "1:217622494963:web:7c1a2b8c4421d241f10186"
-  };
+};
 
-  firebase.initializeApp(firebaseConfig);// Inicializaar app Firebase
+firebase.initializeApp(firebaseConfig);// Inicializaar app Firebase
 
-  const db = firebase.firestore();// db representa mi BBDD //inicia Firestore
-  
-  // Initialize Firebase Authentication and get a reference to the service
-  const auth = firebase.auth();
+const db = firebase.firestore();// db representa mi BBDD //inicia Firestore
+
+// Initialize Firebase Authentication and get a reference to the service
+const auth = firebase.auth();
 
 async function getLists() {
     let resultado = await fetch("https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=RWybTfef3RewOzxt4nu6khx24FcPaoAI");
@@ -26,7 +26,7 @@ async function showLists() {
 
     let tarjetas = document.querySelector(".overall");
     tarjetas.setAttribute("id", "");
-    
+
     for (let i = 0; i < listasTodas.length; i++) {
         let tarjeta = document.createElement("div")
         tarjetas.appendChild(tarjeta);
@@ -92,45 +92,45 @@ async function showLists() {
             <a href="${lista1.books[j].amazon_product_url}"><img id="iconoAmazon" src="./images/amazon.jpg"></img></a>
             </div>`;
 
-            document.querySelector(`#btnFav${[j]}`).addEventListener('click', function(){
+            document.querySelector(`#btnFav${[j]}`).addEventListener('click', function () {
 
                 auth.onAuthStateChanged(user => {
-                    if(user){
+                    if (user) {
                         db.collection("favoritos").add(
                             {
-                            email: user.email,
-                            title: lista1.books[j].title,
-                            cover: lista1.books[j].book_image,
-                            amazon: lista1.books[j].amazon_product_url
-                          })
+                                email: user.email,
+                                title: lista1.books[j].title,
+                                cover: lista1.books[j].book_image,
+                                amazon: lista1.books[j].amazon_product_url
+                            })
                     }
                 })
             })
-    };
-    
-    let arrData = [];
-    auth.onAuthStateChanged(user => {
-        if(user){
-          return db.collection("favoritos").where("email", "==", user.email).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                const favs = document.querySelector(".popUp-content2");
-                const fichasFavs = document.createElement("div");
-                favs.appendChild(fichasFavs);
-                fichasFavs.setAttribute("id", "tarjetasLibrosFav")
-                fichasFavs.innerHTML = `<p>${doc.data().title}</p>
-                <img id="formatImgFav" src="${doc.data().cover}"></img>
-                <div id="botonesFavAmazon">
-                <a href="${doc.data().amazon}"><img id="iconoAmazon" src="./images/amazon.jpg"></img></a>
-                </div>`;
+        };
 
-                // console.log(doc.data());
-          });
-          });  
-        }
-    });   
+        
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                return db.collection("favoritos").where("email", "==", user.email).get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const favs = document.querySelector(".popUp-content2");
+                        const fichasFavs = document.createElement("div");
+                        favs.appendChild(fichasFavs);
+                        fichasFavs.setAttribute("id", "tarjetasLibrosFav")
+                        fichasFavs.innerHTML = `<p>${doc.data().title}</p>
+                        <img id="formatImgFav" src="${doc.data().cover}"></img>
+                        <div id="botonesFavAmazon">
+                        <a href="${doc.data().amazon}"><img id="iconoAmazon" src="./images/amazon.jpg"></img></a>
+                        </div>`;
 
-    crearBoton("btnIndex1")
-}
+                        // console.log(doc.data());
+                    });
+                });
+            }
+        });
+
+        crearBoton("btnIndex1")
+    }
 }
 showLists();
 
@@ -144,27 +144,41 @@ window.addEventListener('load', () => {
 const signInForm = document.querySelector('#sign-form');
 
 signInForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const email = document.querySelector("#sign-email").value;
-  const password = document.querySelector("#sign-pass").value;
+    const email = document.querySelector("#sign-email").value;
+    const password = document.querySelector("#sign-pass").value;
+    var fileText = document.querySelector(".fileText");
+    var fileItem;
+    var fileName;
 
-  auth
-      .createUserWithEmailAndPassword(email, password)
-      .then(userCredential => {
-          signInForm.reset();
+    function getFile(e) {
+        fileItem = e.target.files[0];
+        fileName = fileItem.name;
+        fileText.innerHTML = fileName;
+    }
 
-          console.log('sign in');
-      }).catch((error) => {
-        //let errorCode = error.code;
-        let errorMessage = error.message;
-        alert(errorMessage);
-      });
+    function uploadImage() {
+        let storageRef = firebase.storage().ref("images/"+fileName);
+        let uploadTask = storageRef.put(fileItem);
+    }
+
+    auth
+        .createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+            signInForm.reset();
+            alert("You have signed in");
+            console.log('sign in');
+        }).catch((error) => {
+            //let errorCode = error.code;
+            let errorMessage = error.message;
+            alert(errorMessage);
+        });
 });
 //LOGIN
 const logInForm = document.querySelector("#login-form");
 
-  logInForm.addEventListener("submit", (e)=> {
+logInForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const email = document.querySelector("#login-email").value;
@@ -174,13 +188,13 @@ const logInForm = document.querySelector("#login-form");
         .signInWithEmailAndPassword(email, password)
         .then(userCredential => {
             signInForm.reset();
-
+            alert("You have logged in");
             console.log('log in');
         }).catch((error) => {
-          //let errorCode = error.code;
-         
-          let errorMessage = error.message;
-          alert(errorMessage)
+            //let errorCode = error.code;
+
+            let errorMessage = error.message;
+            alert(errorMessage)
         });
 })
 
@@ -197,20 +211,20 @@ logOut.addEventListener("click", e => {
         })
 })
 
-    const botonFav = document.createElement("a");
-    botonFav.setAttribute("class", "button");
-    botonFav.setAttribute("id", "openFavs");
-    botonFav.innerHTML = "Check favorite books";
-    const encabezado2 = document.getElementById("header");
-    const vacio = document.createElement("div");
+const botonFav = document.createElement("a");
+botonFav.setAttribute("class", "button");
+botonFav.setAttribute("id", "openFavs");
+botonFav.innerHTML = "Check favorite books";
+const encabezado2 = document.getElementById("header");
+const vacio = document.createElement("div");
 //RECOGIDA
 auth.onAuthStateChanged(user => {
-if(user){
-    
-    encabezado2.appendChild(botonFav);
+    if (user) {
 
-    document.querySelector("#openFavs").addEventListener("click", function(){
-        document.querySelector(".popUp2").style.display = "flex";
-    });
-}
+        encabezado2.appendChild(botonFav);
+
+        document.querySelector("#openFavs").addEventListener("click", function () {
+            document.querySelector(".popUp2").style.display = "flex";
+        });
+    }
 })
