@@ -4,11 +4,79 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    
+    <title>NYT Best Sellers</title>
+    <link rel="icon" type="image/x-icon" href="./images/education-cdr-181590785.jpg">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <div class="loader-container">
+        <div class="spinner"></div>
+    </div>
+    <header id="header">
+        <img src="./images/Captura.PNG" id="cartel"></img>
+        <a href="#" class="button" id="botonLog">Login</a>
+        <div class="popUp">
+            <div class="popUp-content">
+                <div class="formatIcons">
+                    <div></div>
+                    <img src="./images/user.png" alt="" id="userIcon">
+                    <img src="./images/equis.png" alt="" id="equisIcon">
+                </div>
+                <form action="" id="login-form" class="form">
+                    <div class="formatPopUp">
+                        <input type="text" id="login-email" placeholder="Email">
+                        <input type="password" id="login-pass" placeholder="Password">
+                        <input class="button" type="submit" value="Login">
+                    </div>
+                    <button class="log_link" id="log_out">< Log out</button>    
+                </form>
+                <form action="" id="sign-form" class="form">
+                    <div class="formatPopUp">
+                        <p id="new">Are you new here?</p>
+                        <input type="text" id="sign-email" placeholder="Email">
+                        <input type="password" id="sign-pass" placeholder="Password">
+                        <input type="file" id="imgUser" onchange="getFile(event)" accept="image/png, image/jpeg"/>
+                        <label for="imgUser"></label>
+                        <span class="fileText"></span>
+                        <button onclick="uploadImage()">Upload image</button>
+                        <input class="button" type="submit" value="Sign in">
+                    </div>
+                </form>    
+            </div>
+        </div>
+        <div class="popUp2">
+            <div class="popUp-content2">
+                <div class="formatIcons2">
+                    <img src="./images/equis.png" alt="" id="equisIcon2">
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="overall">
+
+        </section>
+    </main>
+    <footer id="pie">
+        
+    </footer>
     
+    <script>
+        document.querySelector("#botonLog").addEventListener("click", function(){
+        document.querySelector(".popUp").style.display = "flex";
+        });
+
+        document.querySelector("#equisIcon").addEventListener("click", function(){
+            document.querySelector(".popUp").style.display = "none";
+        });
+
+        document.querySelector("#equisIcon2").addEventListener("click", function(){
+        document.querySelector(".popUp2").style.display = "none";
+    });
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>
