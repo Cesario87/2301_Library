@@ -103,36 +103,36 @@ async function showLists() {
                                 cover: lista1.books[j].book_image,
                                 amazon: lista1.books[j].amazon_product_url
                             })
+                            setTimeout(() => {
+                                document.location.reload();
+                              }, 300);
                     }
                 })
             })
         };
 
-        
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                return db.collection("favoritos").where("email", "==", user.email).get().then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                        const favs = document.querySelector(".popUp-content2");
-                        const fichasFavs = document.createElement("div");
-                        favs.appendChild(fichasFavs);
-                        fichasFavs.setAttribute("id", "tarjetasLibrosFav")
-                        fichasFavs.innerHTML = `<p>${doc.data().title}</p>
-                        <img id="formatImgFav" src="${doc.data().cover}"></img>
-                        <div id="botonesFavAmazon">
-                        <a href="${doc.data().amazon}"><img id="iconoAmazon" src="./images/amazon.jpg"></img></a>
-                        </div>`;
-
-                        // console.log(doc.data());
-                    });
-                });
-            }
-        });
-
         crearBoton("btnIndex1")
     }
 }
 showLists();
+
+auth.onAuthStateChanged(user => {
+        if (user) {
+            return db.collection("favoritos").where("email", "==", user.email).get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const favs = document.querySelector(".popUp-content2");
+                    const fichasFavs = document.createElement("div");
+                    favs.appendChild(fichasFavs);
+                    fichasFavs.setAttribute("id", "tarjetasLibrosFav")
+                    fichasFavs.innerHTML = `<p>${doc.data().title}</p>
+                    <img id="formatImgFav" src="${doc.data().cover}"></img>
+                    <div id="botonesFavAmazon">
+                    <a href="${doc.data().amazon}"><img id="iconoAmazon" src="./images/amazon.jpg"></img></a>
+                    </div>`;
+                });
+            });
+        }
+    });
 
 const loaderContainer = document.querySelector('.loader-container');
 window.addEventListener('load', () => {
@@ -209,6 +209,7 @@ logOut.addEventListener("click", e => {
         .then(() => {
             console.log('log out');
         })
+        document.location.reload();
 })
 
 const botonFav = document.createElement("a");
@@ -225,6 +226,7 @@ auth.onAuthStateChanged(user => {
 
         document.querySelector("#openFavs").addEventListener("click", function () {
             document.querySelector(".popUp2").style.display = "flex";
+            document.querySelector("body").style.overflow = "hidden";
         });
     }
 })

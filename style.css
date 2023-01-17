@@ -1,9 +1,10 @@
-#encabezado {
+#header {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content:flex-start;
     flex-wrap: wrap;
+
 }
 
 a{
@@ -51,14 +52,13 @@ a:active {
     justify-content: center;
     align-items: center;
     text-align: center;
-    
+    height: 110%;
+
     display:none;
 }
 
 .popUp-content{
     border: solid rgb(162, 164, 252);
-    height: 85%;
-    width: 70%;
     background: white;
     border-radius: 5px;
     margin-top: 2%;
@@ -81,11 +81,14 @@ a:active {
 .popUp-content2{
     border: solid rgb(148, 148, 148);
     height: 65%;
-    width: 70%;
+    width: 50%;
     background: white;
     border-radius: 5px;
     margin-top: 2%;
     overflow-y:scroll;
+
+    display: flex;
+    flex-direction: column;
 }
 
 #new{
@@ -97,6 +100,10 @@ a:active {
     flex-direction: row;
     align-items: flex-start;
     justify-content:space-around;
+}
+
+.formatIcons2{
+    position: fixed;
 }
 
 .formatPopUp{

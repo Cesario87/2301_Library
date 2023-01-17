@@ -64,14 +64,17 @@
     <script>
         document.querySelector("#botonLog").addEventListener("click", function(){
         document.querySelector(".popUp").style.display = "flex";
+        document.querySelector("body").style.overflow = "hidden";
         });
 
         document.querySelector("#equisIcon").addEventListener("click", function(){
             document.querySelector(".popUp").style.display = "none";
+            document.querySelector("body").style.overflow = "visible";
         });
 
         document.querySelector("#equisIcon2").addEventListener("click", function(){
         document.querySelector(".popUp2").style.display = "none";
+        document.querySelector("body").style.overflow = "visible";
     });
     </script>
     <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
