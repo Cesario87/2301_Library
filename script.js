@@ -88,7 +88,7 @@ async function showLists() {
             <p>Weeks on list: ${lista1.books[j].weeks_on_list}</p>
             <p>${lista1.books[j].description}</p>
             <div id="botonesFavAmazon">
-            <input type="button" value="Add to favorites" id=btnFav${[j]}></input>
+            <input type="button" value="Add to favorites" id=btnFav${[j]} class="formatFav"></input>
             <a href="${lista1.books[j].amazon_product_url}"><img id="iconoAmazon" src="./images/amazon.jpg"></img></a>
             </div>`;
 
@@ -103,36 +103,41 @@ async function showLists() {
                                 cover: lista1.books[j].book_image,
                                 amazon: lista1.books[j].amazon_product_url
                             })
+
+                    }else{
+                        alert("Sign/log in, please.");
                     }
                 })
+                init(nombre, tarjetas);
+
             })
+
         };
-
-        
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                return db.collection("favoritos").where("email", "==", user.email).get().then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                        const favs = document.querySelector(".popUp-content2");
-                        const fichasFavs = document.createElement("div");
-                        favs.appendChild(fichasFavs);
-                        fichasFavs.setAttribute("id", "tarjetasLibrosFav")
-                        fichasFavs.innerHTML = `<p>${doc.data().title}</p>
-                        <img id="formatImgFav" src="${doc.data().cover}"></img>
-                        <div id="botonesFavAmazon">
-                        <a href="${doc.data().amazon}"><img id="iconoAmazon" src="./images/amazon.jpg"></img></a>
-                        </div>`;
-
-                        // console.log(doc.data());
-                    });
-                });
-            }
-        });
 
         crearBoton("btnIndex1")
     }
 }
 showLists();
+
+function cargaFavs(){
+auth.onAuthStateChanged(user => {
+    if (user) {
+        return db.collection("favoritos").where("email", "==", user.email).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                const favs = document.querySelector(".popUp-content2");
+                const fichasFavs = document.createElement("div");
+                favs.appendChild(fichasFavs);
+                fichasFavs.setAttribute("id", "tarjetasLibrosFav")
+                fichasFavs.innerHTML = `<p>${doc.data().title}</p>
+                    <img id="formatImgFav" src="${doc.data().cover}"></img>
+                    <div id="botonesFavAmazon">
+                    <a href="${doc.data().amazon}"><img id="iconoAmazon" src="./images/amazon.jpg"></img></a>
+                    </div>`;
+            });
+        });
+    }
+});
+};
 
 const loaderContainer = document.querySelector('.loader-container');
 window.addEventListener('load', () => {
@@ -159,7 +164,7 @@ signInForm.addEventListener("submit", (e) => {
     }
 
     function uploadImage() {
-        let storageRef = firebase.storage().ref("images/"+fileName);
+        let storageRef = firebase.storage().ref("images/" + fileName);
         let uploadTask = storageRef.put(fileItem);
     }
 
@@ -190,6 +195,9 @@ logInForm.addEventListener("submit", (e) => {
             signInForm.reset();
             alert("You have logged in");
             console.log('log in');
+            setTimeout(() => {
+                document.location.reload();
+            }, 300);
         }).catch((error) => {
             //let errorCode = error.code;
 
@@ -209,6 +217,7 @@ logOut.addEventListener("click", e => {
         .then(() => {
             console.log('log out');
         })
+    document.location.reload();
 })
 
 const botonFav = document.createElement("a");
@@ -224,7 +233,10 @@ auth.onAuthStateChanged(user => {
         encabezado2.appendChild(botonFav);
 
         document.querySelector("#openFavs").addEventListener("click", function () {
+            
+            cargaFavs();
             document.querySelector(".popUp2").style.display = "flex";
+            document.querySelector("body").style.overflow = "hidden";
         });
     }
 })
