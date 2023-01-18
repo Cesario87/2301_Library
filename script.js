@@ -98,23 +98,34 @@ async function showLists() {
             //         document.querySelector(`#btnFav${[j]}`).style.display = "flex";
             //     }
             // });
-            
+
             document.querySelector(`#btnFav${[j]}`).addEventListener('click', function () {
 
                 auth.onAuthStateChanged(user => {
                     if (user) {
-                        
-                        db.collection("favoritos").add(
-                            {
-                                email: user.email,
-                                title: lista1.books[j].title,
-                                cover: lista1.books[j].book_image,
-                                amazon: lista1.books[j].amazon_product_url
-                            })
+                        db.collection("favoritos").where("email", "==", user.email)
+                        .where("title", "==", lista1.books[j].title)
+                        .get()
+                        .then(function(querySnapshot) {
+                            if(querySnapshot.empty){
+                                db.collection("favoritos").add(
+                                    {
+                                        email: user.email,
+                                        title: lista1.books[j].title,
+                                        cover: lista1.books[j].book_image,
+                                        amazon: lista1.books[j].amazon_product_url
+                                    });
+                                // alert("Book added to favorites");
+                            }else{
+                                alert("Book already in favorites");
+                            }
+                        });
+                    }else{
+                        alert("You have to log in to add a book to your favorites");
                     }
                 })
                 init(nombre, tarjetas);
-
+            
             })
 
         };
