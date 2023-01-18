@@ -146,34 +146,63 @@ window.addEventListener('load', () => {
 
 //FIRESTORE-->
 //SIGN IN
-const signInForm = document.querySelector('#sign-form');
+function getFile(e) {
+    var fileItem;
+    var fileName;
+    fileItem = e.target.files[0];
+    fileName = fileItem.name;
+    var fileText = document.querySelector(".fileText");
+    fileText.innerHTML = fileName;
+  }
 
-signInForm.addEventListener("submit", (e) => {
+  function uploadImage(fileItem, fileName) {
+    let storageRef = firebase.storage().ref("images/" + fileName);
+    let uploadTask = storageRef.put(fileItem);
+    uploadTask.on('state_changed', (snapshot) => {
+    // Observe state change events such as progress, pause, and resume
+    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log('Upload is ' + progress + '% done');
+    switch (snapshot.state) {
+        case firebase.storage.TaskState.PAUSED: // or 'paused'
+        console.log('Upload is paused');
+        break;
+        case firebase.storage.TaskState.RUNNING: // or 'running'
+        console.log('Upload is running');
+        break;
+    }
+    }, (error) => {
+    // Handle unsuccessful uploads
+    console.log(error);
+    }, () => {
+    // Handle successful uploads on complete
+    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        console.log('File available at', downloadURL);
+    });
+    });
+  }
+
+  const signInForm = document.querySelector('#sign-form');
+
+  signInForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const email = document.querySelector("#sign-email").value;
     const password = document.querySelector("#sign-pass").value;
-    var fileText = document.querySelector(".fileText");
-    var fileItem;
-    var fileName;
 
-    function getFile(e) {
-        fileItem = e.target.files[0];
-        fileName = fileItem.name;
-        fileText.innerHTML = fileName;
-    }
-
-    function uploadImage() {
-        let storageRef = firebase.storage().ref("images/" + fileName);
-        let uploadTask = storageRef.put(fileItem);
-    }
+    const fileInput = document.querySelector("#imgUser");
+    fileInput.addEventListener("change", (e) => {
+        getFile(e);
+        uploadImage(fileItem, fileName);
+    });
 
     auth
         .createUserWithEmailAndPassword(email, password)
         .then(userCredential => {
             signInForm.reset();
-            alert("You have signed in");
-            console.log('sign in');
+            alert("You have signed in and image uploaded");
+            console.log('signed in');
         }).catch((error) => {
             //let errorCode = error.code;
             let errorMessage = error.message;
@@ -194,7 +223,7 @@ logInForm.addEventListener("submit", (e) => {
         .then(userCredential => {
             signInForm.reset();
             alert("You have logged in");
-            console.log('log in');
+            console.log('logged in');
             setTimeout(() => {
                 document.location.reload();
             }, 300);
