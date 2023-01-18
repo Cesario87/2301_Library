@@ -91,11 +91,19 @@ async function showLists() {
             <input type="button" value="Add to favorites" id=btnFav${[j]} class="formatFav"></input>
             <a href="${lista1.books[j].amazon_product_url}"><img id="iconoAmazon" src="./images/amazon.jpg"></img></a>
             </div>`;
-
+            
+            // document.querySelector(`#btnFav${[j]}`).style.display = "none";
+            // auth.onAuthStateChanged(user => {
+            //     if (user) {
+            //         document.querySelector(`#btnFav${[j]}`).style.display = "flex";
+            //     }
+            // });
+            
             document.querySelector(`#btnFav${[j]}`).addEventListener('click', function () {
 
                 auth.onAuthStateChanged(user => {
                     if (user) {
+                        
                         db.collection("favoritos").add(
                             {
                                 email: user.email,
@@ -103,9 +111,6 @@ async function showLists() {
                                 cover: lista1.books[j].book_image,
                                 amazon: lista1.books[j].amazon_product_url
                             })
-
-                    }else{
-                        alert("Sign/log in, please.");
                     }
                 })
                 init(nombre, tarjetas);
@@ -258,7 +263,6 @@ const vacio = document.createElement("div");
 //RECOGIDA
 auth.onAuthStateChanged(user => {
     if (user) {
-
         encabezado2.appendChild(botonFav);
 
         document.querySelector("#openFavs").addEventListener("click", function () {
