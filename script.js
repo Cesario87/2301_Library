@@ -15,7 +15,7 @@ const db = firebase.firestore();// db representa mi BBDD //inicia Firestore
 const auth = firebase.auth();
 
 async function getLists() {
-    let resultado = await fetch("https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=RWybTfef3RewOzxt4nu6khx24FcPaoAI");
+    let resultado = await fetch(`https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=${process.env.API_KEY}`);
     let dataBase = await resultado.json();
     const listas = dataBase.results;
     return listas;
